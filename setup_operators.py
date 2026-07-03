@@ -23,32 +23,32 @@ class FACIALM2R_OT_LoadJSON(Operator):
 
     filter_glob: StringProperty(default="*.json", options={'HIDDEN'})
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         if not Path(self.filepath).exists():
             self.report({'ERROR'}, "File not found")
             return {'CANCELLED'}
 
         scene = context.scene
-        scene.facialm2r_shape_keys.clear()
+        scene.facialm2r_shape_keys.clear() # type: ignore
 
         try:
             with open(self.filepath, 'r') as f:
                 data = json.load(f)
                 
                 for entry in data:
-                    item = scene.facialm2r_shape_keys.add()
+                    item = scene.facialm2r_shape_keys.add() # type: ignore
                     item.name = entry['name']
                     item.bone_transforms = json.dumps(entry['bone_transforms'])
                     item.is_setuped = entry['is_setuped']
 
-            self.report({'INFO'}, f"Loaded {len(scene.facialm2r_shape_keys)} shape keys from JSON")
+            self.report({'INFO'}, f"Loaded {len(scene.facialm2r_shape_keys)} shape keys from JSON") # type: ignore
             return {'FINISHED'}
         except Exception as e:
             self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
+    def invoke(self, context, event): # type: ignore
+        context.window_manager.fileselect_add(self) # type: ignore
         return {'RUNNING_MODAL'}
 
 class FACIALM2R_OT_LoadCSV(Operator):
@@ -65,13 +65,13 @@ class FACIALM2R_OT_LoadCSV(Operator):
 
     filter_glob: StringProperty(default="*.csv", options={'HIDDEN'})
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         if not Path(self.filepath).exists():
             self.report({'ERROR'}, "File not found")
             return {'CANCELLED'}
 
         scene = context.scene
-        scene.facialm2r_shape_keys.clear()
+        scene.facialm2r_shape_keys.clear() # type: ignore
 
         try:
             with open(self.filepath, 'r') as f:
@@ -82,18 +82,18 @@ class FACIALM2R_OT_LoadCSV(Operator):
                 skip_cols = {'Timecode', 'BlendShapeCount'} #TODO move this list to addon preferences, to make it user-configurable.
                 
                 for header in headers: # type: ignore
-                    if header not in skip_cols:
-                        item = scene.facialm2r_shape_keys.add()
+                    if header not in skip_cols: 
+                        item = scene.facialm2r_shape_keys.add() # type: ignore
                         item.name = header
 
-            self.report({'INFO'}, f"Loaded {len(scene.facialm2r_shape_keys)} shape keys")
+            self.report({'INFO'}, f"Loaded {len(scene.facialm2r_shape_keys)} shape keys") # type: ignore
             return {'FINISHED'}
         except Exception as e:
             self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
+    def invoke(self, context, event): # type: ignore
+        context.window_manager.fileselect_add(self) # type: ignore
         return {'RUNNING_MODAL'}
 
 class FACIALM2R_OT_SetupMultiplier(Operator):
@@ -108,23 +108,23 @@ class FACIALM2R_OT_SetupMultiplier(Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text=f"Shape Key: {self.shape_key_name}")
-        layout.prop(self, "multiplier")
+        layout.label(text=f"Shape Key: {self.shape_key_name}") # type: ignore
+        layout.prop(self, "multiplier") # type: ignore
 
     def invoke(self, context, event):
         scene = context.scene
-        scene.facialm2r_shape_keys_index = self.list_index
+        scene.facialm2r_shape_keys_index = self.list_index # type: ignore
         # prefill from active list item if available
         try:
             item = get_shape_key_item_by_name(context, self.shape_key_name)
             self.multiplier = item.multiplier # type: ignore
         except Exception:
             pass
-        return context.window_manager.invoke_props_dialog(self)
+        return context.window_manager.invoke_props_dialog(self) # type: ignore
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         scene = context.scene
-        active_shape_key = scene.facialm2r_shape_keys[scene.facialm2r_shape_keys_index]
+        active_shape_key = scene.facialm2r_shape_keys[scene.facialm2r_shape_keys_index] # type: ignore
         active_shape_key.multiplier = self.multiplier
         self.report({'INFO'}, f"Set multiplier for {self.shape_key_name} to {self.multiplier}")
         return {'FINISHED'}
@@ -137,14 +137,14 @@ class FACIALM2R_OT_SymmetrizeShapeKey(Operator):
 
     shape_key_name: StringProperty(name="Shape Key Name")
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         scene = context.scene
-        armature_obj = scene.facialm2r_armature_obj
+        armature_obj = scene.facialm2r_armature_obj # type: ignore
         if not armature_obj or armature_obj.type != 'ARMATURE':
             self.report({'ERROR'}, "No valid armature selected")
             return {'CANCELLED'}
-
-        active_shape_key = scene.facialm2r_shape_keys[scene.facialm2r_shape_keys_index]
+ 
+        active_shape_key = scene.facialm2r_shape_keys[scene.facialm2r_shape_keys_index] # type: ignore
 
         name_low = active_shape_key.name.lower()
         if name_low.endswith('left'):
@@ -159,7 +159,7 @@ class FACIALM2R_OT_SymmetrizeShapeKey(Operator):
 
         # find or create target item
         target_shape_key = None
-        for it in scene.facialm2r_shape_keys:
+        for it in scene.facialm2r_shape_keys: # type: ignore
             if it.name == target_name:
                 target_shape_key = it
                 break
@@ -226,10 +226,10 @@ class FACIALM2R_OT_RecordPose(Operator):
     shape_key_name: StringProperty(name="Shape Key Name")
     list_index: IntProperty(name="List Index", default=0)
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         scene = context.scene
-        armature_obj = scene.facialm2r_armature_obj
-        scene.facialm2r_shape_keys_index = self.list_index
+        armature_obj = scene.facialm2r_armature_obj # type: ignore
+        scene.facialm2r_shape_keys_index = self.list_index # type: ignore
 
         if not armature_obj:
             self.report({'ERROR'}, "No armature selected")
@@ -240,14 +240,14 @@ class FACIALM2R_OT_RecordPose(Operator):
             return {'CANCELLED'}
 
         # Set as active object
-        context.view_layer.objects.active = armature_obj
+        context.view_layer.objects.active = armature_obj # type: ignore
         armature_obj.select_set(True)
 
         # Enter pose mode
         bpy.ops.object.mode_set(mode='POSE')
 
-        scene.facialm2r_is_recording = True
-        scene.facialm2r_current_shape_key = self.shape_key_name
+        scene.facialm2r_is_recording = True # type: ignore
+        scene.facialm2r_current_shape_key = self.shape_key_name # type: ignore
         self.report({'INFO'}, f"Ready to record pose for {self.shape_key_name}")
         return {'FINISHED'}
 
@@ -259,9 +259,9 @@ class FACIALM2R_OT_FinishRecord(Operator):
 
     shape_key_name: StringProperty(name="Shape Key Name")
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         scene = context.scene
-        armature_obj = scene.facialm2r_armature_obj
+        armature_obj = scene.facialm2r_armature_obj # type: ignore
 
         if not armature_obj or armature_obj.type != 'ARMATURE':
             self.report({'ERROR'}, "No valid armature selected")
@@ -280,14 +280,14 @@ class FACIALM2R_OT_FinishRecord(Operator):
                 print(f"Skipping bone {pose_bone.name} with default transforms")
 
         # Find and update the shape key mapping
-        for item in scene.facialm2r_shape_keys:
+        for item in scene.facialm2r_shape_keys: # type: ignore
             if item.name == self.shape_key_name:
                 item.bone_transforms = json.dumps(bone_transforms)
                 item.is_setuped = True
                 break
 
-        scene.facialm2r_is_recording = False
-        scene.facialm2r_current_shape_key = ""
+        scene.facialm2r_is_recording = False # type: ignore
+        scene.facialm2r_current_shape_key = "" # type: ignore
         self.report({'INFO'}, f"Saved transforms for {self.shape_key_name}")
         return {'FINISHED'}
     
@@ -305,11 +305,11 @@ class FACIALM2R_OT_ExportJSON(Operator):
 
     filter_glob: StringProperty(default="*.json", options={'HIDDEN'})
 
-    def execute(self, context):
+    def execute(self, context): # type: ignore
         scene = context.scene
         data = []
 
-        for item in scene.facialm2r_shape_keys:
+        for item in scene.facialm2r_shape_keys: # type: ignore
             data.append({
                 'name': item.name,
                 'bone_transforms': json.loads(item.bone_transforms),
@@ -326,8 +326,8 @@ class FACIALM2R_OT_ExportJSON(Operator):
             self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
+    def invoke(self, context, event): # type: ignore
+        context.window_manager.fileselect_add(self) # type: ignore
         return {'RUNNING_MODAL'}
 
 #TODO add a checkup operator to validate that all shape keys have recorded poses.
