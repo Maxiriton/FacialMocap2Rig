@@ -25,6 +25,9 @@ If you use your own facial rig, you'll need to record each pose for each shape k
 
 A list of shape keys will appear in the list, you now have to record them one by one. Simply it the record button, pose your rig to match the shape as described in [this page](https://pooyadeperson.com/the-ultimate-guide-to-creating-arkits-52-facial-blendshapes/) and when you are done, hit the Finish Recording Button. Repeat the operation  for each shape key.
 
+![A list of shape keys is filled automatically](https://raw.githubusercontent.com/Maxiriton/images_repo/refs/heads/main/facialmocap2rig/shape_key_list.png)
+
+
 The extension comes with a little helper that can symetrize a pose. Click a pose that ends by **Left** or **Right** and click the "symetrize Shape Key" operator below the list. It will automatically symetrize the pose along the X axis. To have this operator work correctly, you need to follow Blender's naming convention for symmetrical bones using **.r** or **.l** in your bones names. 
 
 Once you are done, you can store the configuration in a json file to easily load on other scenes. 
