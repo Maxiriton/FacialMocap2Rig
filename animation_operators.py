@@ -1,8 +1,8 @@
+#type: ignore
 import bpy
 import csv
 import re
 import json
-from math import floor
 from bpy.types import Operator
 from mathutils import Vector, Quaternion
 from .utils import get_setuped_shape_key_item_by_name
@@ -24,7 +24,7 @@ class FACIALM2R_OT_apply_animation(Operator):
         frame = int(round(total_seconds * fps))
         return frame
 
-    def invoke(self, context, event):
+    def invoke(self, context, event): #type: ignore
         context.window_manager.fileselect_add(self)
         return {"RUNNING_MODAL"}
 

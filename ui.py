@@ -1,4 +1,4 @@
-import json
+#type: ignore
 import bpy
 from bpy.types import Panel, UIList
 
